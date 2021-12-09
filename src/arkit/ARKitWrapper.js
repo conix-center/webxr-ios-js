@@ -3,7 +3,7 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 import EventTarget from 'webxr-polyfill/src/lib/EventTarget';
 import XRAnchor from '../extensions/XRAnchor';
@@ -17,7 +17,7 @@ import base64 from "../lib/base64-binary.js";
 import * as mat4 from "gl-matrix/src/gl-matrix/mat4";
 import XRMesh from '../extensions/XRMesh';
 
-/*	
+/*
  * ARKitWrapper talks to Apple ARKit, as exposed by Mozilla's test ARDemo app.
  * It won't function inside a browser like Firefox.
  *
@@ -39,7 +39,7 @@ export default class ARKitWrapper extends EventTarget {
 
 		this._timestamp = 0;
 		this._lightProbe = null;
-		
+
 		this._deviceId = null;
 		this._isWatching = false;
 		this._waitingForSessionStart = false;
@@ -52,8 +52,8 @@ export default class ARKitWrapper extends EventTarget {
 
 		/**
 		 * session state, returned from session and updated when it changes.
-		 * 
-		 * May want to change this to an enum, the permission level: 
+		 *
+		 * May want to change this to an enum, the permission level:
 		 * 		none, minimal, worldSensing, camera
 		 */
 		this._requestedPermissions = {
@@ -63,12 +63,12 @@ export default class ARKitWrapper extends EventTarget {
 
 		/**
 		 * current permissions are the permissions that were granted by the app.
-		 * This will be returned from request session, and _might_ be updated later (don't know 
+		 * This will be returned from request session, and _might_ be updated later (don't know
 		 * yet how we want to manage that)
 		 */
 		this._currentPermissions = {
 			cameraAccess:  false,
-			worldAccess: false	
+			worldAccess: false
 		};
 
 		/**
@@ -103,7 +103,7 @@ export default class ARKitWrapper extends EventTarget {
 
 		// to see if we're getting more data events that we can handle
 		this._dataBeforeNext = 0;
-		
+
 		/**
 		 * For managing the state of ARKit worldmapping
 		 */
@@ -184,7 +184,7 @@ export default class ARKitWrapper extends EventTarget {
 
 		window['userStoppedAR'] = (detail) => {
 			this._handleStopped();
-			
+
 			try {
 				this.dispatchEvent(
 					ARKitWrapper.USER_STOPPED_AR,
@@ -236,7 +236,7 @@ export default class ARKitWrapper extends EventTarget {
 					console.error('INIT_EVENT event error', e);
 				}
 			});
-		} 
+		}
 		return ARKitWrapper.GLOBAL_INSTANCE;
 	}
 
@@ -271,7 +271,7 @@ export default class ARKitWrapper extends EventTarget {
 			const extraOptions = {};
 			if (callback) {
 				// make unique callback name not to conflict with other postMessage call
-				const callbackName = 'arkitCallback_' + actionName + '_' + new Date().getTime() + 
+				const callbackName = 'arkitCallback_' + actionName + '_' + new Date().getTime() +
 					'_' + Math.floor((Math.random() * Number.MAX_SAFE_INTEGER));
 				window[callbackName] = (data) => {
 					delete window[callbackName];
@@ -328,7 +328,7 @@ export default class ARKitWrapper extends EventTarget {
 	 *	{
 	 *		type: 1,			// A packed mask of types ARKitWrapper.HIT_TEST_TYPE_*
 	 *		distance: 1.0216870307922363,	// The distance in meters from the camera to the detected anchor or feature point.
-	 *		world_transform:  [float x 16],	// The pose of the hit test result relative to the world coordinate system. 
+	 *		world_transform:  [float x 16],	// The pose of the hit test result relative to the world coordinate system.
 	 *		local_transform:  [float x 16],	// The pose of the hit test result relative to the nearest anchor or feature point
 	 *
 	 *		// If the `type` is `HIT_TEST_TYPE_ESTIMATED_HORIZONTAL_PLANE`, `HIT_TEST_TYPE_EXISTING_PLANE`, or `HIT_TEST_TYPE_EXISTING_PLANE_USING_EXTENT` (2, 8, or 16) it will also have anchor data:
@@ -382,10 +382,10 @@ export default class ARKitWrapper extends EventTarget {
 
 	/*
 	 * ask for an detection image.
-	 * 
+	 *
 	 * Provide a uid for the anchor that will be created.
 	 * Supply the image in an ArrayBuffer, typedArray or ImageData
-	 * width and height are in meters 
+	 * width and height are in meters
 	 */
 	_createDetectionImage(uid, buffer, width, height, physicalWidthInMeters) {
 		return this._sendMessage('createImageAnchor', {
@@ -527,7 +527,7 @@ export default class ARKitWrapper extends EventTarget {
 	 *		]
 	 *	}
 	 *
-	 */  
+	 */
 	_onData(data) {
 		this._rawARData = data;
 		this._worldInformation = null;
@@ -547,7 +547,7 @@ export default class ARKitWrapper extends EventTarget {
 		mat4.copy(this._viewMatrix, data.camera_view);
 		mat4.copy(this._projectionMatrix, data.projection_camera);
 		this._worldMappingStatus = data.worldMappingStatus;
-		
+
 		if (data.newObjects.length) {
 			for (let i = 0; i < data.newObjects.length; i++) {
 				const element = data.newObjects[i];
@@ -581,7 +581,7 @@ export default class ARKitWrapper extends EventTarget {
 
 		try {
 			this.dispatchEvent(
-				ARKitWrapper.WATCH_EVENT, 
+				ARKitWrapper.WATCH_EVENT,
 				new CustomEvent(ARKitWrapper.WATCH_EVENT, {
 					source: this,
 					detail: this
@@ -595,7 +595,7 @@ export default class ARKitWrapper extends EventTarget {
 		if (this._rAF_callbacks.length > 0) {
 			this._do_rAF();
 		}
-		this._dataBeforeNext++; 
+		this._dataBeforeNext++;
 	}
 
 	/*
@@ -641,7 +641,7 @@ export default class ARKitWrapper extends EventTarget {
 	 *		"viewMatrix": [4x4 camera view matrix],
 	 *		"arCamera": true;
 	 *	    "cameraOrientation": 0,  // orientation in degrees of image relative to display
-         *                  // normally 0, but on video mixed displays that keep the camera in a fixed 
+         *                  // normally 0, but on video mixed displays that keep the camera in a fixed
          *                  // orientation, but rotate the UI, like on some phones, this will change
          *                  // as the display orientation changes
 	 *		"interfaceOrientation": 3,
@@ -668,32 +668,32 @@ export default class ARKitWrapper extends EventTarget {
 			return;
 		}
 
-		// the orientation matrix we get is relative to the current view orientation.  
-		// We need to add an orientation around z, so that we have the orientation that goes from 
+		// the orientation matrix we get is relative to the current view orientation.
+		// We need to add an orientation around z, so that we have the orientation that goes from
 		// camera frame to the current view orientation, since the camera is fixed and the view
-		// changes as we rotate the device. 
+		// changes as we rotate the device.
 		//
 		// We also set a cameraOrientation value for the orientation of the camera relative to the
 		// display.  This will be particular to video-mixed-AR where the camera is the video on the
-		// screen, since any other setup would need to use the full orientation (and probably 
+		// screen, since any other setup would need to use the full orientation (and probably
 		// wouldn't be rotating the content / UI)
 		detail.camera.arCamera = true;
 		const orientation = detail.camera.interfaceOrientation;
 		detail.camera.viewMatrix = detail.camera.inverse_viewMatrix;
 		switch (orientation) {
-			case 1: 
+			case 1:
 				// rotate by -90;
 				detail.camera.cameraOrientation = -90;
 				break;
-			case 2: 
+			case 2:
 				// rotate by 90;
 				detail.camera.cameraOrientation = 90;
 				break;
-			case 3: 
+			case 3:
 				// rotate by nothing
 				detail.camera.cameraOrientation = 0;
 				break;
-			case 4: 
+			case 4:
 				// rotate by 180;
 				detail.camera.cameraOrientation = 180;
 				break;
@@ -704,7 +704,7 @@ export default class ARKitWrapper extends EventTarget {
 				detail.frame.pixelFormat = "YUV420P";
 				break;
 			default:
-				detail.frame.pixelFormat = detail.frame.pixelFormatType; 
+				detail.frame.pixelFormat = detail.frame.pixelFormatType;
 				break;
 		}
 
@@ -723,6 +723,7 @@ export default class ARKitWrapper extends EventTarget {
 		} catch(e) {
 			console.error('COMPUTER_VISION_DATA event error', e);
 		}
+		this._requestComputerVisionData();
 	}
 
 	_do_rAF() {
@@ -738,7 +739,7 @@ export default class ARKitWrapper extends EventTarget {
 			this.startingRender();
 			for (let i = 0; i < callbacks.length; i++) {
 
-				// when we actually execute a callback, we first remove it from the 
+				// when we actually execute a callback, we first remove it from the
 				// queued callback list
 				let queuedCallbacks = this._rAF_currentCallbacks
 				let index = queuedCallbacks.findIndex(d => d && d.handle === callbacks[i].handle);
@@ -759,7 +760,7 @@ export default class ARKitWrapper extends EventTarget {
 	}
 
 	_createOrUpdateAnchorObject(element) {
-		// did this anchor get deleted?  If so, we don't want to 
+		// did this anchor get deleted?  If so, we don't want to
 		// recreate it
 
 		if (element.plane_center) {
@@ -844,7 +845,7 @@ export default class ARKitWrapper extends EventTarget {
 
 	_adjustARKitTime(time) {
 		if (this._timeOffsetComputed) {
-			return time + this._timeOffset; 
+			return time + this._timeOffset;
 		} else {
 			return (performance || Date).now();
 		}
@@ -855,7 +856,7 @@ export default class ARKitWrapper extends EventTarget {
 	// utility methods
 
 	get hasData() { return this._rawARData !== null; } // True if this instance has received data via onWatch
-	
+
 	/*
 	 * getData looks into the most recent ARKit data (as received by onWatch) for a key
 	 * returns the key's value or null if it doesn't exist or if a key is not specified it returns all data
@@ -945,8 +946,8 @@ export default class ARKitWrapper extends EventTarget {
 				// it is unclear WHY there would already be an anchor for this, since any hit
 				// on an existing anchor is likely a plane (or other object eventually) which should result
 				// in an offset from that existing anchor, the case above.  This case should happen if we
-				// say we could hit feature points, and that is what is returned, so there would just be 
-				// a world location that isn't an anchor.  
+				// say we could hit feature points, and that is what is returned, so there would just be
+				// a world location that isn't an anchor.
 				if (!anchor) {
 					anchor = new XRAnchor(hit.world_transform, hit.uuid);
 					console.log('created dummy anchor (not a plane) from hit test');
@@ -977,9 +978,9 @@ export default class ARKitWrapper extends EventTarget {
 			  params,
       		  cancelled: false
 		});
-		
+
 		if (!this._isWatching || this._dataBeforeNext > 0) {
-			this._do_rAF();	
+			this._do_rAF();
 		}
 		return handle;
 	}
@@ -1019,7 +1020,7 @@ export default class ARKitWrapper extends EventTarget {
 	// we don't know if we'll get data faster than we can render
 	finishedRender() {
 		this._dataBeforeNext = 0;
-		this._anchors.forEach(anchor => { 
+		this._anchors.forEach(anchor => {
 			anchor.clearChanged();
 		});
 		this._onUpdate();
@@ -1097,7 +1098,7 @@ export default class ARKitWrapper extends EventTarget {
 		});
 	}
 
-	/* 
+	/*
 	 * RACE CONDITION:  call stop, then watch:  stop does not set isWatching false until it gets a message back from the app,
 	 * so watch will return and not issue a watch command.   May want to set isWatching false immediately?
 	 */
@@ -1138,7 +1139,7 @@ export default class ARKitWrapper extends EventTarget {
 			// create a placeholder anchor so we can use it's uid, and don't
 			// put it in the anchorlist yet, until the promise resolves
 			const tempAnchor = new XRAnchor(anchorInWorldMatrix, null, this._timestamp);
-			this._addAnchor(tempAnchor.uid, anchorInWorldMatrix).then(detail => { 
+			this._addAnchor(tempAnchor.uid, anchorInWorldMatrix).then(detail => {
 				// of there was an error ...
 				if (detail.error) {
 					reject(detail.error);
@@ -1221,12 +1222,12 @@ export default class ARKitWrapper extends EventTarget {
 			// sent here
 			const anchor = this._anchors.get(uid);
 			if (anchor && !anchor.deleted) {
-				// the anchor might still be here, but not been "recreated", so we only 
+				// the anchor might still be here, but not been "recreated", so we only
 				// use it if it's really been recreated
 				resolve(anchor);
 				return;
 			}
-			this._activateDetectionImage(uid, trackable).then(detail => { 
+			this._activateDetectionImage(uid, trackable).then(detail => {
 				if (detail.error) {
 					reject(detail.error);
 					reject();
@@ -1235,7 +1236,7 @@ export default class ARKitWrapper extends EventTarget {
 					reject(null);
 					return;
 				}
-				
+
 				this._createOrUpdateAnchorObject(detail.imageAnchor);
 				detail.imageAnchor.object.deleted = false;
 				resolve(detail.imageAnchor.object);
@@ -1248,14 +1249,14 @@ export default class ARKitWrapper extends EventTarget {
 
 	deactivateDetectionImage(uid) {
 		return new Promise((resolve, reject) => {
-			this._deactivateDetectionImage(uid).then(detail => { 
+			this._deactivateDetectionImage(uid).then(detail => {
 				if (detail.error) {
 					reject(detail.error)
 					reject;
 				}
 
 				// when we deactivate an image, there is a chance the anchor could still be
-				// around.  Delete it 
+				// around.  Delete it
 				const anchor = this._anchors.get(uid);
 				if (anchor) {
 					console.warn("anchor for image target '" + uid + "' still exists after deactivation");
@@ -1292,7 +1293,7 @@ export default class ARKitWrapper extends EventTarget {
 			});
 		});
 	}
-	
+
 	setWorldMap(worldMap) {
 		return this._setWorldMap(worldMap);
 	}
@@ -1313,7 +1314,7 @@ export default class ARKitWrapper extends EventTarget {
 	}
 
 	// we probably need to issue a perm request if they ask for more than
-	// we have asked for in the past.  So, if we ASK for worldSensing, we 
+	// we have asked for in the past.  So, if we ASK for worldSensing, we
 	// won't ask again, but if we haven't, we will once
 	updateWorldSensingState(options) {
 		if (options.hasOwnProperty("meshDetectionState") && this._currentPermissions.worldAccess) {
@@ -1333,10 +1334,10 @@ export default class ARKitWrapper extends EventTarget {
 		let state = {};
 		if (this._worldSensingState.meshDetectionState) {
 			state.meshes = [];
-			this._anchors.forEach(anchor => { 
+			this._anchors.forEach(anchor => {
 				// there is a chance that mesh-related anchors will be created before they
 				// have any geometry.  Only return ones with meshes
-				if (anchor.isMesh() && !anchor.deleted && !anchor.placeholder) { 
+				if (anchor.isMesh() && !anchor.deleted && !anchor.placeholder) {
 					state.meshes.push(anchor);
 				}
 			});

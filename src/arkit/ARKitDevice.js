@@ -3,7 +3,7 @@
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at https://mozilla.org/MPL/2.0/. 
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 import * as mat4 from 'gl-matrix/src/gl-matrix/mat4';
 import * as vec3 from 'gl-matrix/src/gl-matrix/vec3';
@@ -178,7 +178,7 @@ export default class ARKitDevice extends XRDevice {
 	}
 
 	logPose() {
-		console.log('pose', 
+		console.log('pose',
 			mat4.getTranslation(new Float32Array(3), this._headModelMatrix),
 			mat4.getRotation(new Float32Array(4), this._headModelMatrix)
 		);
@@ -218,7 +218,7 @@ export default class ARKitDevice extends XRDevice {
 		this._hitTestResultsForNextFrame.clear();
 
 		if (!this._arKitWrapper) {
-			console.error('Hit test requires ARKitWrapper.'); 
+			console.error('Hit test requires ARKitWrapper.');
 			return;
 		}
 
@@ -298,7 +298,7 @@ export default class ARKitDevice extends XRDevice {
 			this._frameOfRefRequestsWaiting.length = 0;
 		}
 	}
-		
+
 	// XRDevice methods
 
 	get depthNear() { return this._depthNear; }
@@ -377,7 +377,7 @@ export default class ARKitDevice extends XRDevice {
 			const session = new Session(mode, enabledFeatures);
 
 			this._sessions.set(session.id, session);
-	
+
 			return Promise.resolve(session.id);
 		}
 
@@ -484,7 +484,7 @@ export default class ARKitDevice extends XRDevice {
 	userEndedSession() {
 		if (this._activeSession) {
 			let session = this._activeSession
-			
+
 			if (session.immersive && !session.ended) {
 				this.endSession(session.id)
 
@@ -512,7 +512,7 @@ export default class ARKitDevice extends XRDevice {
 						}
 					}
 				}
-		
+
 				const canvas = session.baseLayer.context.canvas;
 				this._wrapperDiv.removeChild(canvas);
 
@@ -537,7 +537,7 @@ export default class ARKitDevice extends XRDevice {
 				document.body.style.backgroundColor = session.bodyBackgroundColor;
 				document.body.style.backgroundImage = session.bodyBackgroundImage;
 			}
-	
+
 			this._wrapperDiv.style.display = "none";
 
 			this._activeSession = null;
@@ -569,7 +569,7 @@ export default class ARKitDevice extends XRDevice {
 
 		this._frameSession = session;
 
-		// If the session is inline make sure the projection matrix matches the 
+		// If the session is inline make sure the projection matrix matches the
 		// aspect ratio of the underlying WebGL canvas.
 		if (session.immersive) {
 			mat4.copy(this._projectionMatrix, this._deviceProjectionMatrix);
@@ -594,10 +594,10 @@ export default class ARKitDevice extends XRDevice {
 			if (session.baseLayer) {
 				const canvas = session.baseLayer.context.canvas;
 				// Update the projection matrix.
-				mat4.perspective(this._projectionMatrix, 	
-					renderState.inlineVerticalFieldOfView, 
-					canvas.width/canvas.height, 
-					renderState.depthNear, 
+				mat4.perspective(this._projectionMatrix,
+					renderState.inlineVerticalFieldOfView,
+					canvas.width/canvas.height,
+					renderState.depthNear,
 					renderState.depthFar);
 			}
 		}
@@ -672,17 +672,17 @@ export default class ARKitDevice extends XRDevice {
 
 			switch (type) {
 				case 'viewer':
-					enqueueOrExec(() => { 
+					enqueueOrExec(() => {
 						resolve(this._headModelMatrix);
 					});
 					return;
 				case 'local':
-					enqueueOrExec(() => { 
+					enqueueOrExec(() => {
 						resolve(this._eyeLevelMatrix);
 					});
 					return;
 				case 'local-floor':
-					enqueueOrExec(() => { 
+					enqueueOrExec(() => {
 						resolve(this._stageMatrix);
 					});
 					return;
@@ -832,7 +832,7 @@ class Session {
 	constructor(mode, enabledFeatures) {
 		this.mode = mode;
 		this.enabledFeatures = enabledFeatures;
-		this.immersive = mode == 'immersive-ar';		
+		this.immersive = mode == 'immersive-ar';
 		this.ended = null; // boolean
 		this.baseLayer = null; // XRWebGLLayer
 		this.id = ++SESSION_ID;
@@ -856,5 +856,11 @@ class ARWatcher extends ARKitWatcher {
 
 	handleUserStoppedAR(event) {
 		this._arKitDevice.userEndedSession()
+	}
+
+	handleComputerVisionData(e) {
+		if (typeof window.processCV === "function") {
+			window.processCV(e.detail);
+		}
 	}
 }
