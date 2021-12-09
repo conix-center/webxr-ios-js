@@ -27,7 +27,7 @@
 			let localReferenceSpace = null;
 			let viewerReferenceSpace = null;
 			let engine = null;
-			
+
 			// temporary working variables
 			const workingMatrix = mat4.create();
 			const workingVec3 = vec3.create();
@@ -82,7 +82,7 @@
 				session.updateRenderState({baseLayer: new XRWebGLLayer(session, context)});
 
 				// Create a simple test scene and renderer
-				// The engine's scene is in the eye-level coordinate system 
+				// The engine's scene is in the eye-level coordinate system
 				engine = new XREngine(canvas, context);
 
 				// get the location of the device, and use it to create an
@@ -117,7 +117,7 @@
 				goButton.innerText = 'Go';
 			};
 
-			// render loop			
+			// render loop
 			const handleAnimationFrame = (t, frame) => {
 				if(!session || session.ended) return;
 

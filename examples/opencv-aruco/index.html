@@ -10,7 +10,7 @@
 				width: 100%;
 				height: 100%;
 				overflow: hidden;
-				-webkit-overflow-scrolling: touch;			
+				-webkit-overflow-scrolling: touch;
 				-webkit-user-select: none;
 				user-select: none;
 			}
@@ -44,10 +44,10 @@
 		<link rel="stylesheet" href="../common.css"/>
 		<script src="../libs/three.js"></script>
 		<script src="../libs/stats.js"></script>
-<!-- 	
+<!--
 		<script type="module" src="../../polyfill/XRPolyfill.js"></script>
 		<script nomodule src="../../dist/webxr-polyfill.js"></script>
- -->		
+ -->
  		<script src="../../dist/webxr-polyfill.js"></script>
 		<script src="../common.js"></script>
 	</head>
@@ -61,7 +61,7 @@
 
 		<script>
 			// set up for collecting different stats
-			var beginTime = ( performance || Date ).now(), prevTime = beginTime, frames = 0;			
+			var beginTime = ( performance || Date ).now(), prevTime = beginTime, frames = 0;
 			var stats = new Stats();
 			stats.domElement.style.cssText = 'position:fixed;top:2%;right:2%;cursor:pointer;opacity:0.9;z-index:10000';
 			var cvPanel = stats.addPanel( new Stats.Panel( 'CV fps', '#ff8', '#221' ) );
@@ -81,7 +81,7 @@
 
 			var cvStatusTxt = "";
 
-			// various variables to hold values for statistics collected from the worker 
+			// various variables to hold values for statistics collected from the worker
 			var cvStartTime = 0;
 			var cvAfterMatTime = 0;
 			var cvAfterDetectTime = 0;
@@ -91,11 +91,11 @@
 			var cvMarkerTime = 0
 			var cvDetectTime = 0;
 			var cvIdleTime = 0;
-			
+
 			// has openCV loaded?
 			var openCVready = false;
-			
-			// for debugging, show the image we did the CV on 
+
+			// for debugging, show the image we did the CV on
 			var showCVImage = false;
 			var cvImageBuff = null
 
@@ -129,7 +129,7 @@
 					})
 				}
 
-				newSession() {					
+				newSession() {
 					this.worker = new Worker ("worker.js")
 
 					// start with video frames paused till opencv loaded
@@ -173,7 +173,7 @@
 									cvIdleTime = cvStartTime - cvEndTime;
 								}
 								break
-								
+
 							case "cvAfterMat":
 								cvAfterMatTime = ev.data.time;
 								cvMatTime = cvAfterMatTime - cvStartTime
@@ -187,7 +187,7 @@
 							case "cvReady":
 								console.log('OpenCV.js is ready');
 								this.session.startVideoFrames();
-								openCVready = true				
+								openCVready = true
 								break;
 
 							case "cvStatus":
@@ -196,8 +196,8 @@
 						}
 					}
 
-					this.worker.addEventListener('error', (e) => { 
-						console.log("worker error:" + e) 
+					this.worker.addEventListener('error', (e) => {
+						console.log("worker error:" + e)
 					})
 
 					this.setVideoWorker(this.worker);
@@ -231,7 +231,7 @@
 
 					// this.scene.add(this.camerabox)
 					// this.camerabox.add(this.markerbox)
-					
+
 					this.scene.add(new THREE.AmbientLight('#FFF', 0.2))
 					let directionalLight = new THREE.DirectionalLight('#FFF', 0.6)
 					directionalLight.position.set(0, 10, 0)
@@ -268,7 +268,7 @@
 								var pose = this.markers[i].pose;
 
 								if (!(markerId in this.markerAnchors)) {
-									// Add a box 
+									// Add a box
 									var markerbox = new THREE.Object3D();
 									var markerboxGeom = new THREE.Mesh(
 										new THREE.BoxBufferGeometry(0.053, 0.053, 0.053),
@@ -277,7 +277,7 @@
 									markerboxGeom.position.set(0, 0, 0.053/2);
 									markerbox.add(markerboxGeom)
 									this.markerBoxes[markerId] = markerbox
-									
+
 									const coordinates = frame.getCoordinateSystem(XRCoordinateSystem.TRACKER)
 
 									markerbox.matrix.fromArray(this.camPose)
@@ -287,7 +287,7 @@
 
 									this.tempQuat.setFromRotationMatrix(markerbox.matrix)
 
-									const anchorUID = frame.addAnchor(coordinates, 
+									const anchorUID = frame.addAnchor(coordinates,
 												[markerbox.matrix.elements[12], markerbox.matrix.elements[13], markerbox.matrix.elements[14]],
 												[this.tempQuat.x, this.tempQuat.y, this.tempQuat.z, this.tempQuat.w])
 									var anchorOffset = new XRAnchorOffset(anchorUID)
@@ -300,10 +300,10 @@
 									this.tempMat2.multiply(this.tempMat)
 
 									var markerBox = this.markerBoxes[markerId]
-									var anchorOffset = this.markerAnchors[markerId]  
+									var anchorOffset = this.markerAnchors[markerId]
 
-									anchorOffset.setIdentityOffset()			
-									var anchor = frame.getAnchor(anchorOffset.anchorUID)					
+									anchorOffset.setIdentityOffset()
+									var anchor = frame.getAnchor(anchorOffset.anchorUID)
 									this.tempMat.fromArray(anchorOffset.getOffsetTransform(anchor.coordinateSystem))
 									this.tempMat.getInverse(this.tempMat)
 									this.tempMat.premultiply(this.tempMat2)
@@ -324,11 +324,11 @@
 							txt += "<br>NO MARKERS"
 						}
 
-						txt += "<br><br>idle / init / resize / detect:<br> " 
-						txt += cvIdleTime.toFixed(2) 
+						txt += "<br><br>idle / init / resize / detect:<br> "
+						txt += cvIdleTime.toFixed(2)
 						txt += " " + (cvMatTime).toFixed(2)
 						txt += " " + (cvDetectTime).toFixed(2)
-						txt += " " + (cvMarkerTime).toFixed(2) 
+						txt += " " + (cvMarkerTime).toFixed(2)
 					} else {
 						txt += "(Initializing OpenCV)"
 					}
@@ -344,7 +344,7 @@
 			}
 			function opencvIsReady() {
 				console.log('OpenCV.js is ready');
-				openCVready = true				
+				openCVready = true
 			}
 			function AxesHelper( size ) {
 				size = size || 1;
