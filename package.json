@@ -34,6 +34,6 @@
   },
   "dependencies": {
     "gl-matrix": "^2.5.1",
-    "webxr-polyfill": "git://github.com/conix-center/webxr-polyfill-for-ios-viewer.git#902ea8c05870f46018fe7c1bb7c3a5ed9b588115"
+    "webxr-polyfill": "git://github.com/conix-center/webxr-polyfill-for-ios-viewer.git#64c1dcc320ce0def7c4f688d54a64b96cf4cde64"
   }
 }
